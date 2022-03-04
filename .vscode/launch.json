@@ -1,0 +1,36 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+          "name": "Airflow Init",
+          "type": "python",
+          "request": "launch",
+          "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+          "python": "${workspaceFolder}/.venv/bin/python3",
+          "program": "${workspaceFolder}/.venv/bin/airflow",
+          "console": "integratedTerminal",
+          "args": [
+              "db",
+              "init"
+          ]
+        },
+        {
+            "name": "Airflow Test Dag",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "integratedTerminal",
+            "args": [
+                "dags",
+                "test",
+                "antaq_etl",
+                "2022-03-04"
+            ]
+        }
+      ]
+}
