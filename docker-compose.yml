@@ -274,7 +274,7 @@ services:
 #       airflow-init:
 #         condition: service_completed_successfully
 
-  # TIP : Eduardo Luiz
+  # NOTE : Eduardo Luiz
   # Criação de container com o SQL Server
   # Estamos utilizando uma imagem customizada para injeção
   # do cliente de linha de comando. Necesário para criação
@@ -287,6 +287,35 @@ services:
         SA_PASSWORD: "${SA_PASSWORD}"
         ACCEPT_EULA: "Y"
         MSSQL_TCP_PORT: "1433"
+
+  spark-master:
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - '9090:8080'
+      - '7077:7077'
+
+  spark-worker:
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - "9091:8081"
+      - "7001:7000"
+    depends_on:
+      - spark-master
 
 volumes:
   postgres-db-volume:

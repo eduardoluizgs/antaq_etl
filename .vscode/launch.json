@@ -5,17 +5,78 @@
     "version": "0.2.0",
     "configurations": [
         {
-          "name": "Airflow Init",
-          "type": "python",
-          "request": "launch",
-          "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
-          "python": "${workspaceFolder}/.venv/bin/python3",
-          "program": "${workspaceFolder}/.venv/bin/airflow",
-          "console": "integratedTerminal",
-          "args": [
-              "db",
-              "init"
-          ]
+            "name": "Airflow Init DB",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "db",
+                "init"
+            ]
+        },
+        {
+            "name": "Airflow Init Admin User",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "integratedTerminal",
+            "args": [
+                "users",
+                "create",
+                "--username",
+                "airflow",
+                "--firstname",
+                "Airflow",
+                "--lastname",
+                "Admin",
+                "--role",
+                "Admin",
+                "--email",
+                "admin@airflow.org",
+            ]
+        },
+        {
+            "name": "Airflow Webserver",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "webserver"
+            ]
+        },
+        {
+            "name": "Airflow Scheduler",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "scheduler"
+            ]
+        },
+        {
+            "name": "Airflow Clean Dag",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "integratedTerminal",
+            "args": [
+                "tasks",
+                "clear",
+                "antaq_etl"
+            ]
         },
         {
             "name": "Airflow Test Dag",
@@ -24,13 +85,61 @@
             "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
             "python": "${workspaceFolder}/.venv/bin/python3",
             "program": "${workspaceFolder}/.venv/bin/airflow",
-            "console": "integratedTerminal",
+            "console": "internalConsole",
             "args": [
                 "dags",
                 "test",
                 "antaq_etl",
                 "2022-03-04"
             ]
+        },
+        {
+            "name": "Airflow Test Task - tarefa_extrai_dados_anuario_2019",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "tasks",
+                "test",
+                "antaq_etl",
+                "tarefa_extrai_dados_anuario_2019",
+                "2022-03-04"
+            ]
+        },
+        {
+            "name": "Airflow Test Task - tarefa_transforma_dados_atracacao_2019",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "tasks",
+                "test",
+                "antaq_etl",
+                "tarefa_transforma_dados_atracacao_2019",
+                "2022-03-04"
+            ]
+        },
+        {
+            "name": "Airflow Test Task - tarefa_grava_dados_atracacao_2019",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "tasks",
+                "test",
+                "antaq_etl",
+                "tarefa_grava_dados_atracacao_2019",
+                "2022-03-04"
+            ]
         }
-      ]
+    ]
 }

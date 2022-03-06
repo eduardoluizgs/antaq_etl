@@ -24,7 +24,7 @@ def check_connections(connections):
             .count()
         if not exists:
             subprocess.Popen(
-                "python $AIRFLOW_HOME/bin/airflow connections --add --conn_id '{}' --conn_type '{}' --conn_uri '{}'".format(
+                "python $AIRFLOW_HOME/.venv/bin/airflow connections --add --conn_id '{}' --conn_type '{}' --conn_uri '{}'".format(
                     connection,
                     params.get('type', ' '),
                     params.get('uri', ' ')
