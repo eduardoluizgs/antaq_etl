@@ -1,5 +1,7 @@
 # ANTAQ ETL SOLUTION
 
+Este documento tem como objetivo guiar a instalação e configuração do ambiente para `Mac OS Monterey 12.1` com Python `3.7`.
+
 ## Configução do ambiente Docker
 
 Primeiramente crie a imagem do `SQL Server` com assistente de linha de comando, necessário para criação da estrutura inicial da base:
@@ -8,7 +10,7 @@ Primeiramente crie a imagem do `SQL Server` com assistente de linha de comando, 
 $ docker build -t sqlserver .
 ```
 
-Suba o `docker-compose` para iniciar os containers do `SQL Server` e `Airflow`:
+Suba o `docker-compose` para iniciar os containers do `SQL Server`, `Airflow` e `Spark`:
 
 ```shell
 $ docker-compose up -d
@@ -67,11 +69,58 @@ Após inicialize o banco de dadis do `airflow`:
 $ <project_path>/.venv/bin/python <project_path>/.venv/lib/python3.7/site-packages/airflow db init
 ```
 
-Ou caso esteja utilizando o `VSCode` execute a configuração `Airflow Init` na seção `Executar e Depurar (Degug)`.
+Ou caso esteja utilizando o `VSCode` execute a configuração `Airflow Init DB` na seção `Executar e Depurar (Degug)`.
+
+Após crie o usuário `Admin` do `airflow`:
+
+```shell
+<project_path>/.venv/bin/python <project_path>/.venv/lib/python3.7/site-packages/airflow \
+    users create \
+    --username airflow \
+    --firstname Airflow \
+    --lastname Admin \
+    --role Admin \
+    --email admin@airflow.org
+```
+
+Ou caso esteja utilizando o `VSCode` execute a configuração `Airflow Init Admin User` na seção `Executar e Depurar (Degug)`.
+
+Para que sua `dag` não falhe durante o processo de `debug`, ajuste o arquivo de configuração `airflow.cfg`:
+
+```
+# How long before timing out a python file import
+dagbag_import_timeout = 0
+```
+
+A `DAG` atual realiza comunicação com o `Spark`. Para instalar o `Spark` e o `PySpark` execute (`Homebrew` é necessário aqui):
+
+```shell
+$ brew install openjdk@11
+$ brew install scala (optional)
+$ brew install apache-spark
+```
+
+Por fim, instale os pacotes adicionais do projeto:
+
+```shell
+pip install -r requeriments.txt
+```
+
+### Iniciando o Webserver em ambiente local
+
+Para inicializar a interface gráfica do `airflow` execute:
+
+```shell
+$ <project_path>/.venv/bin/python <project_path>/.venv/lib/python3.7/site-packages/airflow webserver
+```
+
+Ou caso esteja utilizando o `VSCode` execute a configuração `Airflow Webserver` na seção `Executar e Depurar (Degug)`.
+
+Após o `webserver` ser iniciado, é necessário ajustar a conexão com o `SQL Server`. Acesse a opção `Admin > Connections` na interface gráfica, e edite os dados da conexão `mssql_default`.
 
 ### Executando a DAG em ambiente local
 
-Após inicialize o banco de dadis do `airflow`:
+Após inicialize o banco de dados do `airflow`:
 
 ```shell
 $ <project_path>/.venv/bin/python <project_path>/.venv/lib/python3.7/site-packages/airflow dags test antaq_etl YYYY-mm-dd
