@@ -79,10 +79,26 @@
             ]
         },
         {
-            "name": "Airflow Test Dag",
+            "name": "Airflow Delete Dag",
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "integratedTerminal",
+            "args": [
+                "dags",
+                "delete",
+                "-y",
+                "antaq_etl"
+            ]
+        },
+        {
+            "name": "Airflow Test Dag",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": false,
             "python": "${workspaceFolder}/.venv/bin/python3",
             "program": "${workspaceFolder}/.venv/bin/airflow",
             "console": "internalConsole",
@@ -90,7 +106,25 @@
                 "dags",
                 "test",
                 "antaq_etl",
-                "2022-03-04"
+                "2022-03-06"
+            ]
+        },
+        {
+            "name": "Airflow Backfill Dag",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "integratedTerminal",
+            "args": [
+                "dags",
+                "backfill",
+                "-s",
+                "2022-03-05",
+                "-e",
+                "2022-03-07",
+                "antaq_etl"
             ]
         },
         {
@@ -106,7 +140,7 @@
                 "test",
                 "antaq_etl",
                 "tarefa_extrai_dados_anuario_2019",
-                "2022-03-04"
+                "2022-03-06"
             ]
         },
         {
@@ -122,7 +156,23 @@
                 "test",
                 "antaq_etl",
                 "tarefa_transforma_dados_atracacao_2019",
-                "2022-03-04"
+                "2022-03-06"
+            ]
+        },
+        {
+            "name": "Airflow Test Task - tarefa_transforma_dados_carga_2019",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "tasks",
+                "test",
+                "antaq_etl",
+                "tarefa_transforma_dados_carga_2019",
+                "2022-03-06"
             ]
         },
         {
@@ -138,7 +188,23 @@
                 "test",
                 "antaq_etl",
                 "tarefa_grava_dados_atracacao_2019",
-                "2022-03-04"
+                "2022-03-06"
+            ]
+        },
+        {
+            "name": "Airflow Test Task - tarefa_grava_dados_carga_2019",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "tasks",
+                "test",
+                "antaq_etl",
+                "tarefa_grava_dados_carga_2019",
+                "2022-03-06"
             ]
         }
     ]

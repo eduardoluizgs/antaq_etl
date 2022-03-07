@@ -66,18 +66,14 @@ class ExtraiDadosAnuario(StorageTask):
         return True
 
 
-def get_grupo_extrai_dados_anuario_por_ano(previous_task, next_task, **context):
-    """ Retorna um conjunto de tarefas de extração dos dados do anuário para cada ano configurado.
+def get_tarefa_extrai_dados_anuario_por_ano(year, **context):
+    """ Retorna uma tarefa de extração dos dados do anuário para cada ano configurado.
 
         NOTE : Eduardo Luiz
         Esta função cria um PythonOperator informando o caminho de armazenamento dos arquivos e o ano.
     """
 
-    years = json.loads(AirflowVariables.get(Variables.ANTAQ_YEARS_TO_EXTRACT) or [])
-
-    for year in years:
-
-        task_year = PythonOperator(
+    return PythonOperator(
             task_id='{}_{}'.format(Tasks.TAREFA_EXTRAI_DADOS_ANUARIO, year),
             python_callable=ExtraiDadosAnuario,
             op_kwargs=dict(
@@ -90,5 +86,3 @@ def get_grupo_extrai_dados_anuario_por_ano(previous_task, next_task, **context):
             provide_context=True,
             dag=context['dag']
         )
-
-        previous_task >> task_year >> next_task

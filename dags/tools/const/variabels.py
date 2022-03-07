@@ -8,6 +8,9 @@ class Variables(object):
     @classmethod
     def all(cls):
         return {
-            cls.ANTAQ_ETL_DAG_SCHEDULE_INTERVAL: '0 12 * * *',
+            # NOTE : Eduardo Luiz
+            # Como a periodiciodade de atualização dos dados deve ser mensal
+            # vamos carregar todo dia 1 as 0h
+            cls.ANTAQ_ETL_DAG_SCHEDULE_INTERVAL: '0 0 1 * *',
             cls.ANTAQ_YEARS_TO_EXTRACT: [2019, 2020, 2021]
         }

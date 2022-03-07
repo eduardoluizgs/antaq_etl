@@ -3,8 +3,8 @@
 import os
 
 from pyspark.sql import SparkSession
-from pyspark.sql.types import IntegerType, TimestampType, DecimalType, FloatType
-from pyspark.sql.functions import regexp_replace
+from pyspark.sql.types import IntegerType, TimestampType, FloatType
+from pyspark.sql.functions import regexp_replace, to_timestamp, when
 
 from airflow.exceptions import AirflowException
 
@@ -97,7 +97,7 @@ class TransformaDadosAtracacao(StorageTask):
             .withColumnRenamed('Nº da Capitania', 'NumeroCapitania')\
             .withColumnRenamed('Nº do IMO', 'NumeroIMO')
 
-        # ajustando o formado dos campos numéricos
+        # ajustando o formado dos campos
         atracacao_df = atracacao_df\
             .withColumn('TEsperaAtracacao', regexp_replace('TEsperaAtracacao', '\\.', ''))\
             .withColumn('TEsperaAtracacao', regexp_replace('TEsperaAtracacao', ',', '.'))\
@@ -110,18 +110,33 @@ class TransformaDadosAtracacao(StorageTask):
             .withColumn('TAtracado', regexp_replace('TAtracado', '\\.', ''))\
             .withColumn('TAtracado', regexp_replace('TAtracado', ',', '.'))\
             .withColumn('TEstadia', regexp_replace('TEstadia', '\\.', ''))\
-            .withColumn('TEstadia', regexp_replace('TEstadia', ',', '.'))
+            .withColumn('TEstadia', regexp_replace('TEstadia', ',', '.'))\
+            .withColumn('DataAtracacao', to_timestamp(atracacao_df.DataAtracacao, "dd/MM/yyyy HH:mm:ss"))\
+            .withColumn('DataChegada', to_timestamp(atracacao_df.DataChegada, "dd/MM/yyyy HH:mm:ss"))\
+            .withColumn('DataDesatracacao', to_timestamp(atracacao_df.DataDesatracacao, "dd/MM/yyyy HH:mm:ss"))\
+            .withColumn('DataInicioOperacao', to_timestamp(atracacao_df.DataInicioOperacao, "dd/MM/yyyy HH:mm:ss"))\
+            .withColumn('DataTerminoOperacao', to_timestamp(atracacao_df.DataTerminoOperacao, "dd/MM/yyyy HH:mm:ss"))\
+            .withColumn('Mes',
+                when(atracacao_df.Mes == 'jan', 1)\
+                when(atracacao_df.Mes == 'fev', 2)\
+                when(atracacao_df.Mes == 'mac', 3)\
+                when(atracacao_df.Mes == 'abr', 4)\
+                when(atracacao_df.Mes == 'mai', 5)\
+                when(atracacao_df.Mes == 'jun', 6)\
+                when(atracacao_df.Mes == 'jul', 7)\
+                when(atracacao_df.Mes == 'ago', 8)\
+                when(atracacao_df.Mes == 'set', 9)\
+                when(atracacao_df.Mes == 'out', 10)\
+                when(atracacao_df.Mes == 'nov', 11)\
+                when(atracacao_df.Mes == 'dez', 12)\
+                .otherwise(0)
+            )
 
         # ajusta o tipo das colunas do dataframe
         atracacao_df = atracacao_df\
             .withColumn('IDAtracacao', atracacao_df.IDAtracacao.cast(IntegerType()))\
             .withColumn('CDTUP', atracacao_df.CDTUP.cast(IntegerType()))\
             .withColumn('IDBerco', atracacao_df.IDBerco.cast(IntegerType()))\
-            .withColumn('DataAtracacao', atracacao_df.DataAtracacao.cast(TimestampType()))\
-            .withColumn('DataChegada', atracacao_df.DataChegada.cast(TimestampType()))\
-            .withColumn('DataDesatracacao', atracacao_df.DataDesatracacao.cast(TimestampType()))\
-            .withColumn('DataInicioOperacao', atracacao_df.DataInicioOperacao.cast(TimestampType()))\
-            .withColumn('DataTerminoOperacao', atracacao_df.DataTerminoOperacao.cast(TimestampType()))\
             .withColumn('Ano', atracacao_df.Ano.cast(IntegerType()))\
             .withColumn('Mes', atracacao_df.Mes.cast(IntegerType()))\
             .withColumn('NacionalidadeArmador', atracacao_df.FlagMCOperacaoAtracacao.cast(IntegerType()))\
@@ -131,13 +146,10 @@ class TransformaDadosAtracacao(StorageTask):
             .withColumn('TOperacao', atracacao_df.TOperacao.cast(FloatType()))\
             .withColumn('TEsperaDesatracacao', atracacao_df.TEsperaDesatracacao.cast(FloatType()))\
             .withColumn('TAtracado', atracacao_df.TAtracado.cast(FloatType()))\
-            .withColumn('TEstadia', atracacao_df.TEstadia.cast(FloatType()))\
-            .withColumn('TEsperaAtracacao', atracacao_df.TEsperaAtracacao.cast(DecimalType(15, 15)))\
-            # .withColumn('TEsperaInicioOp', atracacao_df.TEsperaInicioOp.cast(DecimalType(15, 15)))\
-            # .withColumn('TOperacao', atracacao_df.TOperacao.cast(DecimalType(15, 15)))\
-            # .withColumn('TEsperaDesatracacao', atracacao_df.TEsperaDesatracacao.cast(DecimalType(15, 15)))\
-            # .withColumn('TAtracado', atracacao_df.TAtracado.cast(DecimalType(15, 15)))\
-            # .withColumn('TEstadia', atracacao_df.TEstadia.cast(DecimalType(15, 15)))
+            .withColumn('TEstadia', atracacao_df.TEstadia.cast(FloatType()))
+
+        # atracacao_df.filter(atracacao_df.IDAtracacao == 1031710) \
+        #     .show(truncate=False)
 
         # grava o novo dataframe para o arquivo intermediario
         atracacao_df.write.parquet(cls.storage_path_transformed, mode='overwrite')

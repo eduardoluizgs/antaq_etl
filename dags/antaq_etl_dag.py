@@ -15,9 +15,7 @@ from tools.const.connections import Connections
 from tools.const.variabels import Variables
 from tools.operators.dummy_operator import get_task_dummy_operator
 
-from tasks.captura_dados_por_ano_tarefa import get_grupo_captura_dados_anuario_por_ano
-from tasks.extrai_dados_por_ano_tarefa import get_grupo_extrai_dados_anuario_por_ano
-from tasks.transforma_dados_grupo import get_grupo_transforma_dados_atracacao_por_ano
+from tasks.processa_dados_grupo import get_grupo_processa_dados_atracacao_por_ano
 
 # *******************************************
 #
@@ -34,7 +32,7 @@ check_variables(Variables.all())
 # check_connections(Connections.all()) # TODO : Review this
 
 context = dict(
-    schedule_interval=AirflowVariables.get(Variables.ANTAQ_ETL_DAG_SCHEDULE_INTERVAL),
+    schedule_interval='0 0 6 * *', # AirflowVariables.get(Variables.ANTAQ_ETL_DAG_SCHEDULE_INTERVAL), # TODO : Review this
     data_path=os.path.join(BASE_PATH, 'data'),
     storage_path=os.path.join(
         BASE_PATH,
@@ -58,7 +56,7 @@ dag = DAG(
     dag_id=DAG_ID,
     description='Extracao e Transformacao de dados para do Anuário Estatísticos da ANTAQ (Agência Nacional de Transportes Aquáticos)',
     schedule_interval=None if context.get('schedule_interval') == 'None' else context.get('schedule_interval'),
-    start_date=datetime.now(),
+    start_date=datetime(2022, 3, 6),
     # start_date=days_ago(1),
     catchup=False,
     default_args=dict(
@@ -79,16 +77,11 @@ context.update({'dag': dag})
 # *******************************************
 
 grupo_inicio = get_task_dummy_operator('grupo_inicio', **context)
-grupo_captura = get_task_dummy_operator('grupo_captura', **context)
-grupo_extracao = get_task_dummy_operator('grupo_extracao', **context)
-grupo_transformacao_e_gravacao = get_task_dummy_operator('grupo_transformacao_e_gravacao', **context)
-grupo_transformacao_atracacao = get_task_dummy_operator('grupo_transformacao_atracacao', **context)
+grupo_processamento = get_task_dummy_operator('grupo_processamento', **context)
 grupo_notifica_conclusao_processo = get_task_dummy_operator('grupo_notifica_conclusao_processo', **context)
 grupo_fim = get_task_dummy_operator('grupo_fim', **context)
 
-get_grupo_captura_dados_anuario_por_ano(grupo_captura, grupo_extracao, **context)
-get_grupo_extrai_dados_anuario_por_ano(grupo_extracao, grupo_transformacao_e_gravacao, **context)
-get_grupo_transforma_dados_atracacao_por_ano(grupo_transformacao_atracacao, grupo_notifica_conclusao_processo, **context)
+get_grupo_processa_dados_atracacao_por_ano(grupo_processamento, grupo_notifica_conclusao_processo, **context)
 
 # *******************************************
 #
@@ -96,12 +89,5 @@ get_grupo_transforma_dados_atracacao_por_ano(grupo_transformacao_atracacao, grup
 #
 # *******************************************
 
-grupo_inicio >> grupo_captura
-# grupo_captura >> grupo_captura_dados_anuario_por_ano
-# grupo_captura_dados_anuario_por_ano >> grupo_extracao
-# grupo_extracao >> grupo_extrai_dados_anuario_por_ano
-# grupo_extrai_dados_anuario_por_ano >> grupo_transformacao_e_gravacao
-grupo_transformacao_e_gravacao >> grupo_transformacao_atracacao
-# grupo_transformacao_atracacao >> grupo_transforma_dados_atracacao_por_ano
-# get_grupo_transforma_dados_atracacao_por_ano >> grupo_notifica_conclusao_processo
+grupo_inicio >> grupo_processamento
 grupo_notifica_conclusao_processo >> grupo_fim

@@ -2,6 +2,10 @@
 
 Este documento tem como objetivo guiar a instalação e configuração do ambiente para `Mac OS Monterey 12.1` com Python `3.7`.
 
+## Estrutura do Projeto
+
+TODO : Adicionar uma lista com os principais arquivos e pastas
+
 ## Configução do ambiente Docker
 
 Primeiramente crie a imagem do `SQL Server` com assistente de linha de comando, necessário para criação da estrutura inicial da base:
