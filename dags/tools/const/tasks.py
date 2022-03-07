@@ -2,6 +2,7 @@
 
 class Tasks(object):
 
+    TAREFA_CAPTURA_DADOS_ANUARIO = 'tarefa_captura_dados_anuario'
     TAREFA_EXTRAI_DADOS_ANUARIO = 'tarefa_extrai_dados_anuario'
     TAREFA_TRANSFORMA_DADOS_ATRACACAO = 'tarefa_transforma_dados_atracacao'
     TAREFA_TRANSFORMA_DADOS_CARGA = 'tarefa_transforma_dados_carga'

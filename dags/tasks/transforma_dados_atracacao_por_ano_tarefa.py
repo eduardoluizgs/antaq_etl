@@ -117,18 +117,18 @@ class TransformaDadosAtracacao(StorageTask):
             .withColumn('DataInicioOperacao', to_timestamp(atracacao_df.DataInicioOperacao, "dd/MM/yyyy HH:mm:ss"))\
             .withColumn('DataTerminoOperacao', to_timestamp(atracacao_df.DataTerminoOperacao, "dd/MM/yyyy HH:mm:ss"))\
             .withColumn('Mes',
-                when(atracacao_df.Mes == 'jan', 1)\
-                when(atracacao_df.Mes == 'fev', 2)\
-                when(atracacao_df.Mes == 'mac', 3)\
-                when(atracacao_df.Mes == 'abr', 4)\
-                when(atracacao_df.Mes == 'mai', 5)\
-                when(atracacao_df.Mes == 'jun', 6)\
-                when(atracacao_df.Mes == 'jul', 7)\
-                when(atracacao_df.Mes == 'ago', 8)\
-                when(atracacao_df.Mes == 'set', 9)\
-                when(atracacao_df.Mes == 'out', 10)\
-                when(atracacao_df.Mes == 'nov', 11)\
-                when(atracacao_df.Mes == 'dez', 12)\
+                 when(atracacao_df.Mes == 'jan', 1)\
+                .when(atracacao_df.Mes == 'fev', 2)\
+                .when(atracacao_df.Mes == 'mac', 3)\
+                .when(atracacao_df.Mes == 'abr', 4)\
+                .when(atracacao_df.Mes == 'mai', 5)\
+                .when(atracacao_df.Mes == 'jun', 6)\
+                .when(atracacao_df.Mes == 'jul', 7)\
+                .when(atracacao_df.Mes == 'ago', 8)\
+                .when(atracacao_df.Mes == 'set', 9)\
+                .when(atracacao_df.Mes == 'out', 10)\
+                .when(atracacao_df.Mes == 'nov', 11)\
+                .when(atracacao_df.Mes == 'dez', 12)\
                 .otherwise(0)
             )
 
@@ -148,8 +148,8 @@ class TransformaDadosAtracacao(StorageTask):
             .withColumn('TAtracado', atracacao_df.TAtracado.cast(FloatType()))\
             .withColumn('TEstadia', atracacao_df.TEstadia.cast(FloatType()))
 
-        # atracacao_df.filter(atracacao_df.IDAtracacao == 1031710) \
-        #     .show(truncate=False)
+        atracacao_df.filter(atracacao_df.IDAtracacao == 1031710) \
+            .show(truncate=False)
 
         # grava o novo dataframe para o arquivo intermediario
         atracacao_df.write.parquet(cls.storage_path_transformed, mode='overwrite')

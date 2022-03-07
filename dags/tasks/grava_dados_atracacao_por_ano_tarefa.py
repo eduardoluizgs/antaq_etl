@@ -3,10 +3,8 @@
 import os
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, when
 
 from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
-from airflow.providers.microsoft.mssql.operators.mssql import MsSqlOperator
 
 from airflow.exceptions import AirflowException
 

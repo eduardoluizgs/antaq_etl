@@ -18,18 +18,14 @@ from tools.const.tasks import Tasks
 
 class ExtraiDadosAnuario(StorageTask):
 
+    storage_path_captured = None
     storage_path = None
-    data_path = None
     year = None
 
     @classmethod
     def _pre_execute(cls, **kwargs):
 
         super()._pre_execute(**kwargs)
-
-        cls.data_path = kwargs.get('data_path', None)
-        if not cls.data_path:
-            raise AirflowException('Invalid Data Path!')
 
         cls.storage_path = kwargs.get('storage_path', None)
         if not cls.storage_path:
@@ -44,12 +40,13 @@ class ExtraiDadosAnuario(StorageTask):
             cls.task_instance.get_template_context()
         )
 
+        cls.storage_path_captured = os.path.join(cls.storage_path, 'captured')
         cls.storage_path = os.path.join(cls.storage_path, 'extracted', str(cls.year))
 
     @classmethod
     def _execute(cls, **kwargs):
 
-        file_path = os.path.join(cls.data_path, '{}.zip'.format(cls.year))
+        file_path = os.path.join(cls.storage_path_captured, '{}.zip'.format(cls.year))
         if not os.path.isfile(file_path):
             raise AirflowException(u'Arquivo de dados para o ano {} não encontrado!'.format(cls.year))
 
@@ -79,7 +76,6 @@ def get_tarefa_extrai_dados_anuario_por_ano(year, **context):
             op_kwargs=dict(
                 depends_on=[],
                 storage_path=context.get('storage_path'),
-                data_path=context.get('data_path'),
                 year=year
             ),
             depends_on_past=True,

@@ -48,7 +48,7 @@ class GravaDadosCarga(StorageTask):
 
         try:
             # TODO : Verificar quando o servidor spark estiver em outro HOST
-            # NOTE : Verificar o melhor lugar para realizar a configuração de memória
+            # TODO : Verificar o melhor lugar para realizar a configuração de memória
             cls.spark = SparkSession.builder\
                 .appName(kwargs['dag'].dag_id)\
                 .config('spark.driver.memory', '10g')\

@@ -128,6 +128,22 @@
             ]
         },
         {
+            "name": "Airflow Test Task - tarefa_captura_dados_anuario_2019",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/.venv/lib/python3.7/site-packages/airflow",
+            "python": "${workspaceFolder}/.venv/bin/python3",
+            "program": "${workspaceFolder}/.venv/bin/airflow",
+            "console": "internalConsole",
+            "args": [
+                "tasks",
+                "test",
+                "antaq_etl",
+                "tarefa_captura_dados_anuario_2019",
+                "2022-03-06"
+            ]
+        },
+        {
             "name": "Airflow Test Task - tarefa_extrai_dados_anuario_2019",
             "type": "python",
             "request": "launch",
