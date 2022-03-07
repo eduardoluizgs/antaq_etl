@@ -148,8 +148,8 @@ class TransformaDadosAtracacao(StorageTask):
             .withColumn('TAtracado', atracacao_df.TAtracado.cast(FloatType()))\
             .withColumn('TEstadia', atracacao_df.TEstadia.cast(FloatType()))
 
-        atracacao_df.filter(atracacao_df.IDAtracacao == 1031710) \
-            .show(truncate=False)
+        # atracacao_df.filter(atracacao_df.IDAtracacao == 1031710) \
+        #     .show(truncate=False)
 
         # grava o novo dataframe para o arquivo intermediario
         atracacao_df.write.parquet(cls.storage_path_transformed, mode='overwrite')

@@ -17,6 +17,7 @@ dags/               |Pasta contendo as dags/fluxos de processamento de dados do 
 dags/tasks          |Pasta contendo os scripts de `captura`, `extração`, `transformação` e `gravação`.
 dags/tools          |Arquivos de helpers e funções genéricas e uso geral.
 storage/            |Pasta para armazenar de forma temporário os arquivos de dados.
+airflow-artigo.pdf  |Mini artigo sobre `Airflow`.
 airflow.cfg         |Arquivo de configuração do `Airflow` para execução em ambiente local.
 Dockerfile          |Arquivo de imagem `docker` para criação do container `SQL Server`. Necssário para injeção do utilitário de linha de comando para criação da estrutura inicial do banco de dados.
 docker-compose.yml  |Arquivo com configurações para criação de containers do `Airflow`, `Spark`e `SQL Server`.
