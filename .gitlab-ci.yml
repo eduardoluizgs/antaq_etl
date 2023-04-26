@@ -1,0 +1,63 @@
+image: apache/airflow:latest
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+stages:
+  - test
+  - package
+  - delivery
+
+before_script:
+  - virtualenv venv
+  - source venv/bin/activate
+
+test:
+  script:
+    - echo "Execute Python Tests Here..."
+  only:
+    - merge_requests
+
+package:
+  stage: package
+  script:
+    - cd dags
+    - python setup.py bdist_wheel
+  artifacts:
+    name: $CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA${CI_COMMIT_TAG:+"$CI_COMMIT_TAG"}
+    paths:
+      - dist/*.whl
+  only:
+    - staging
+    - main
+
+deploy-into-staging:
+  stage: delivery
+  script:
+    - mkdir -p /opt/airflow/dags
+    - chmod go+rw /opt/airflow/dags
+    - mount -t nfs -o vers=4 $STAGING_SERVER_PATH /opt/airflow/dags
+    - WHL_FILE="$(set -- dist/${CI_PROJECT_NAME}*.whl; echo "$1")"
+    - cp $WHL_FILE /opt/airflow/dags/$DAGS_SUBFOLDER_DEVELOPMENT/${CI_PROJECT_NAME}.whl
+  only:
+    - staging
+  dependencies:
+    - package
+
+deploy-into-production:
+  stage: delivery
+  script:
+    - mkdir -p /opt/airflow/dags
+    - chmod go+rw /opt/airflow/dags
+    - mount -t nfs -o vers=4 $PRODUCTION_SERVER_PATH /opt/airflow/dags
+    - WHL_FILE="$(set -- dist/${CI_PROJECT_NAME}*.whl; echo "$1")"
+    - cp $WHL_FILE /opt/airflow/dags/$DAGS_SUBFOLDER_DEVELOPMENT/${CI_PROJECT_NAME}.whl
+  only:
+    - production
+  dependencies:
+    - package
